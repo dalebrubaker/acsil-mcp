@@ -23,3 +23,6 @@ native/AcsilMcp.user.props
 
 # Test results
 TestResults/
+
+# Downloaded Sierra Chart docs (scripts/fetch-acsil-docs.ps1); not redistributable
+docs/acsil-cache/

@@ -43,8 +43,9 @@ Check a capability against both sources before relying on it:
    - Trading (read-only use here): <https://www.sierrachart.com/index.php?page=doc/ACSILTrading.html>
    - Drawings: <https://www.sierrachart.com/index.php?page=doc/ACSILDrawingTools.html>
 
-   The pages are large. Download one, strip the HTML to text, and search it for the `sc.Name [ Link`
-   heading rather than asking a summarizer.
+   The pages are large. Run `pwsh scripts\fetch-acsil-docs.ps1` once. It downloads every ACSIL page
+   to `docs\acsil-cache\*.txt` (git-ignored, Sierra Chart's text, never commit it; `-Force`
+   refreshes). Search that folder for the `### sc.Name` heading rather than asking a summarizer.
 
 Record verified findings, with the date and header `SC_DLL_VERSION`, in the "Verified ACSIL Surface"
 table in `docs/PLAN.md`.

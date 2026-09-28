@@ -10,6 +10,9 @@ var builder = Host.CreateApplicationBuilder(args);
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole(options => options.LogToStandardErrorThreshold = LogLevel.Trace);
 
+builder.Services.AddSingleton(AgentClientOptions.FromCommandLine(args));
+builder.Services.AddSingleton<AgentClient>();
+
 builder.Services
     .AddMcpServer(options =>
     {

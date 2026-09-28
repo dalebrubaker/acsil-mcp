@@ -13,8 +13,17 @@
     <ItemGroup>
         <ClCompile Include="adapter\DllName.cpp"/>
         <ClCompile Include="adapter\AgentStudy.cpp"/>
+        <ClCompile Include="core\AgentRegistry.cpp"/>
+        <ClCompile Include="core\Bridge.cpp"/>
+        <ClCompile Include="core\Dispatcher.cpp"/>
+        <ClCompile Include="core\SocketServer.cpp"/>
     </ItemGroup>
     <ItemGroup>
+        <ClInclude Include="core\AgentRegistry.h"/>
+        <ClInclude Include="core\Bridge.h"/>
+        <ClInclude Include="core\Dispatcher.h"/>
+        <ClInclude Include="core\Framing.h"/>
+        <ClInclude Include="core\SocketServer.h"/>
         <ClInclude Include="core\Version.h"/>
     </ItemGroup>
     <PropertyGroup Label="Globals">

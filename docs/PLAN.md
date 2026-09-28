@@ -1,6 +1,6 @@
 # acsil-mcp — Implementation Plan
 
-Status: CP0 (repository bootstrap) built locally; awaiting commit and CI
+Status: CP0 done (CI green 2026-09-28). CP1 implemented and tested off-line; awaiting the live check in Sierra Chart.
 
 ## Objective
 
@@ -120,13 +120,14 @@ respond within 5 s — chart hidden or Sierra Chart busy").
 acsil-mcp/
   AcsilMcp.sln
   README.md  AGENTS.md  CLAUDE.md  LICENSE  SECURITY.md  CONTRIBUTING.md  CHANGELOG.md
-  docs/  PLAN.md  safety.md  (later: install.md  protocol.md  tools.md)
+  docs/  PLAN.md  safety.md  protocol.md  (later: install.md  tools.md)
   native/
-    AcsilMcp.vcxproj  AcsilMcpTests.vcxproj  vcpkg.json (catch2; nlohmann-json from CP1)
+    AcsilMcp.vcxproj  AcsilMcpTests.vcxproj  vcpkg.json (catch2, nlohmann-json)
     AcsilMcp.user.props.example   per-machine deploy targets (copy to AcsilMcp.user.props)
     ACS_Source/  Sierra Chart headers
-    core/        registry, framing, json, validation — no sierrachart.h
+    core/        Framing, AgentRegistry, Dispatcher, SocketServer, Bridge — no sierrachart.h
     adapter/     DllName.cpp, AgentStudy.cpp (scsf_AcsilMcpChartAgent)
+    triplets/    x64-windows-static-v143 (pins vcpkg to the project toolset)
     tests/       Catch2 tests for core/
   server/
     AcsilMcp.Server/        .NET 10 MCP server (stdio), assembly acsil-mcp
@@ -151,7 +152,8 @@ The DLL exports `scdll_DLLName`, `scdll_DLLVersion`, and `scsf_AcsilMcpChartAgen
 server tests pass. The guard passes clean and fails on a planted `sc.BuyEntry`. A deploy dry run
 to a scratch folder sent both UDP commands and copied the DLL and PDB. Remaining: commit the
 headers and the skeleton, CI green on `main`, and a live check that the study appears in Sierra
-Chart's Add Custom Study list.
+Chart's Add Custom Study list. CI went green on `main` after pinning the vcpkg triplet to v143
+(the runner's Visual Studio 2026 otherwise builds dependencies with v145).
 
 ### CP1 — Transport skeleton and `list_charts`
 
@@ -163,6 +165,15 @@ Chart's Add Custom Study list.
 - Live: agents in two chartbooks both listed; Sierra Chart unaffected when the server is absent;
   DLL release/reload stops and restarts the thread cleanly; measure latency against the chart
   update interval.
+
+Result (2026-09-28, off-line): implemented as `core/Framing.h`, `AgentRegistry`, `Dispatcher`,
+`SocketServer`, `Bridge`, the agent study, and the server's `AgentClient` and `list_charts`.
+`LIST_CHARTS` and `PING` are answered on the socket thread; chart-routed requests wait for the
+agent. `LIST_CHARTS` also reports `lastUpdateAgeMs` (the expected wait for a chart request) and
+`pendingRequests`. Native tests (18 cases) passed 30 of 30 runs; server tests (22) pass. An
+end-to-end run of the real core in a scratch host against the real MCP server over stdio listed
+two chartbooks. Protocol: [protocol.md](protocol.md).
+Remaining live check: the acceptance items above, run by the maintainer with a deploying build.
 
 ### CP2 — Summary, bars, studies
 

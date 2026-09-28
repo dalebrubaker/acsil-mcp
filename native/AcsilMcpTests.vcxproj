@@ -12,7 +12,15 @@
     </ItemGroup>
     <!-- Tests cover core/ only, which never includes sierrachart.h. -->
     <ItemGroup>
+        <ClCompile Include="tests\AgentRegistryTests.cpp"/>
+        <ClCompile Include="tests\DispatcherTests.cpp"/>
+        <ClCompile Include="tests\FramingTests.cpp"/>
+        <ClCompile Include="tests\SocketServerTests.cpp"/>
         <ClCompile Include="tests\VersionTests.cpp"/>
+        <ClCompile Include="core\AgentRegistry.cpp"/>
+        <ClCompile Include="core\Bridge.cpp"/>
+        <ClCompile Include="core\Dispatcher.cpp"/>
+        <ClCompile Include="core\SocketServer.cpp"/>
     </ItemGroup>
     <PropertyGroup Label="Globals">
         <VCProjectVersion>15.0</VCProjectVersion>

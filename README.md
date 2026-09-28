@@ -5,8 +5,7 @@ Desktop, Codex, Cursor, ...) read and navigate the charts that are **open in Sie
 now**: list charts, see the bars on screen, read study values, read fills, take a snapshot, and
 scroll a chart to a date. It never trades.
 
-> **Status: pre-alpha.** The repository skeleton builds; no tools are implemented yet.
-> See [docs/PLAN.md](docs/PLAN.md).
+> **Status: pre-alpha.** Only `list_charts` is implemented. See [docs/PLAN.md](docs/PLAN.md).
 
 Sierra Chart is a trademark of its owner. This project is not affiliated with or endorsed by
 Sierra Chart.
@@ -42,6 +41,19 @@ msbuild AcsilMcp.sln -restore -p:Configuration=Release -p:Platform=x64
 ```
 
 Pass `-p:SkipSierraChartDeploy=true` to build without touching running Sierra Chart instances.
+
+## Using it
+
+1. In Sierra Chart, add the study **ACSIL MCP Chart Agent** (Analysis >> Studies >> Add Custom
+   Study >> AcsilMcp) to each chart the assistant may see. Its Port input defaults to 22921.
+2. Register the server with your MCP client. For Claude Code:
+
+```powershell
+claude mcp add acsil-mcp -- dotnet E:\path\to\acsil-mcp\server\AcsilMcp.Server\bin\Release\net10.0\acsil-mcp.dll
+```
+
+   Add `--port N` after the DLL path (or set `ACSIL_MCP_PORT`) if you changed the study's Port.
+3. Ask about your charts. The wire protocol is in [docs/protocol.md](docs/protocol.md).
 
 ## License
 

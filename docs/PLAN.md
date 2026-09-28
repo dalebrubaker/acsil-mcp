@@ -1,6 +1,6 @@
 # acsil-mcp — Implementation Plan
 
-Status: plan, awaiting approval
+Status: CP0 (repository bootstrap) built locally; awaiting commit and CI
 
 ## Objective
 
@@ -50,16 +50,23 @@ Decisions:
 5. **Core/adapter split in C++.** `core/` (registry, framing, JSON, request validation) never
    includes `sierrachart.h` and is unit-tested in CI. `adapter/` holds the ACSIL study and is the
    only code that touches `sc`.
-6. **ACSIL headers are not vendored.** The build reads them from the user's Sierra Chart install
-   (`SierraChartDir` MSBuild property, default `C:\SierraChart`). CI builds and tests `core/` and the
-   server; the full DLL is built locally by the maintainer (see Risks).
-7. **Distribution.** GitHub Releases attach `AcsilMcp.dll` and a self-contained
+6. **ACSIL headers live in `native/ACS_Source`.** The maintainer chose to commit Sierra Chart's
+   `.h` files there, as BruScCpp does, so CI can build the DLL; that commit is made by the
+   maintainer. `AcsSourceDir` (default `native\ACS_Source`) points the build at another folder,
+   such as an installation's `ACS_Source`. CI builds the DLL only when `sierrachart.h` is present.
+7. **Build and deploy like BruScCpp.** `AcsilMcp.sln` holds the DLL, its Catch2 tests,
+   `ScUdpCommand`, and the .NET projects. Before a build, each Sierra Chart instance listed in the
+   git-ignored `native\AcsilMcp.user.props` is sent `RELEASE_ALL_DLLS` over UDP. After it, the DLL
+   and PDB are copied to `<instance>\Data` and `ALLOW_LOAD_ALL_DLLS` is sent.
+   `-p:SkipSierraChartDeploy=true` disables both steps.
+8. **Distribution.** GitHub Releases attach `AcsilMcp.dll` and a self-contained
    `acsil-mcp.exe`. The server is also published as a `dotnet tool` (`dotnet tool install -g
    acsil-mcp`).
 
 ## Verified ACSIL Surface
 
-Verified 2026-09-28 against `sierrachart.h` and the sierrachart.com ACSIL docs.
+Verified 2026-09-28 against `sierrachart.h` (`SC_DLL_VERSION` 2876 and 2882) and the
+sierrachart.com ACSIL docs.
 
 | Need | ACSIL | Notes |
 |---|---|---|
@@ -112,20 +119,22 @@ respond within 5 s — chart hidden or Sierra Chart busy").
 
 ```text
 acsil-mcp/
-  README.md  LICENSE  SECURITY.md  CONTRIBUTING.md  CHANGELOG.md
-  docs/  PLAN.md  safety.md  install.md  protocol.md  tools.md
+  AcsilMcp.sln
+  README.md  AGENTS.md  CLAUDE.md  LICENSE  SECURITY.md  CONTRIBUTING.md  CHANGELOG.md
+  docs/  PLAN.md  safety.md  (later: install.md  protocol.md  tools.md)
   native/
-    AcsilMcp.sln  AcsilMcp.vcxproj  vcpkg.json (nlohmann-json, catch2)
+    AcsilMcp.vcxproj  AcsilMcpTests.vcxproj  vcpkg.json (catch2; nlohmann-json from CP1)
+    AcsilMcp.user.props.example   per-machine deploy targets (copy to AcsilMcp.user.props)
+    ACS_Source/  Sierra Chart headers
     core/        registry, framing, json, validation — no sierrachart.h
-    adapter/     AgentStudy.cpp (SCDLLName, scsf_AcsilMcpChartAgent)
+    adapter/     DllName.cpp, AgentStudy.cpp (scsf_AcsilMcpChartAgent)
     tests/       Catch2 tests for core/
   server/
-    AcsilMcp.Server/        .NET 10 MCP server (stdio)
+    AcsilMcp.Server/        .NET 10 MCP server (stdio), assembly acsil-mcp
     AcsilMcp.Server.Tests/  xUnit; fake agent over loopback TCP
-  scripts/
-    check-no-trading.ps1    source guard
-    deploy-dll.ps1          copy DLL to <SierraChartDir>\Data, release/reload via SC UDP
-  .github/workflows/  ci.yml  release.yml
+  tools/ScUdpCommand/       RELEASE_ALL_DLLS / ALLOW_LOAD_ALL_DLLS sender used by the build
+  scripts/check-no-trading.ps1
+  .github/workflows/  ci.yml  (CP4: release.yml)
 ```
 
 ## Checkpoints
@@ -137,6 +146,13 @@ Each checkpoint ends with build + tests and a live check in Sierra Chart run by 
 Public GitHub repo, license, README skeleton with status and disclaimer, `.gitignore`
 (VS/.NET/vcpkg), layout above with empty projects that build, `ci.yml` (windows-latest: vcpkg +
 MSBuild for `core/` tests, `dotnet test`, source guard). Acceptance: CI green on `main`.
+
+Local result (2026-09-28): Debug and Release build against the `SC_DLL_VERSION` 2882 headers.
+The DLL exports `scdll_DLLName`, `scdll_DLLVersion`, and `scsf_AcsilMcpChartAgent`. Native and
+server tests pass. The guard passes clean and fails on a planted `sc.BuyEntry`. A deploy dry run
+to a scratch folder sent both UDP commands and copied the DLL and PDB. Remaining: commit the
+headers and the skeleton, CI green on `main`, and a live check that the study appears in Sierra
+Chart's Add Custom Study list.
 
 ### CP1 — Transport skeleton and `list_charts`
 
@@ -185,8 +201,7 @@ MSBuild for `core/` tests, `dotnet test`, source guard). Acceptance: CI green on
   error names the chart. Verify in CP1.
 - **DLL reload mid-request.** The registry fails all pending requests on the last agent's
   `LastCallToFunction` before joining the thread.
-- **Building the DLL in CI without vendoring ACSIL headers.** Options, decide in CP0: (a) release DLLs
-  built locally and uploaded by the maintainer; (b) CI downloads the Sierra Chart installer and
-  extracts `ACS_Source` at build time, if its terms allow. Default to (a).
+- **Header drift.** A DLL built against old headers may lack newer `sc` members. Refresh
+  `native/ACS_Source` from a current installation when a checkpoint needs a new member.
 - **Payload size.** Keep the C++ cap and the `maxBars` default (1000) aligned; document costs in
   `tools.md`.

@@ -1,0 +1,49 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32602.215
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AcsilMcp", "native\AcsilMcp.vcxproj", "{0851A43F-45A7-464C-903A-4D88E466CFAD}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AcsilMcpTests", "native\AcsilMcpTests.vcxproj", "{094DBA9D-A1B4-4A42-8C95-B82F416C5E49}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScUdpCommand", "tools\ScUdpCommand\ScUdpCommand.csproj", "{C29DB48F-BD17-4760-97C6-C2298BD2AA89}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AcsilMcp.Server", "server\AcsilMcp.Server\AcsilMcp.Server.csproj", "{B77B5E33-0087-4D80-9B5B-8551AAB43F2F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AcsilMcp.Server.Tests", "server\AcsilMcp.Server.Tests\AcsilMcp.Server.Tests.csproj", "{06F3264C-5B4F-45A7-9F3C-A7BA19286B0D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0851A43F-45A7-464C-903A-4D88E466CFAD}.Debug|x64.ActiveCfg = Debug|x64
+		{0851A43F-45A7-464C-903A-4D88E466CFAD}.Debug|x64.Build.0 = Debug|x64
+		{0851A43F-45A7-464C-903A-4D88E466CFAD}.Release|x64.ActiveCfg = Release|x64
+		{0851A43F-45A7-464C-903A-4D88E466CFAD}.Release|x64.Build.0 = Release|x64
+		{094DBA9D-A1B4-4A42-8C95-B82F416C5E49}.Debug|x64.ActiveCfg = Debug|x64
+		{094DBA9D-A1B4-4A42-8C95-B82F416C5E49}.Debug|x64.Build.0 = Debug|x64
+		{094DBA9D-A1B4-4A42-8C95-B82F416C5E49}.Release|x64.ActiveCfg = Release|x64
+		{094DBA9D-A1B4-4A42-8C95-B82F416C5E49}.Release|x64.Build.0 = Release|x64
+		{C29DB48F-BD17-4760-97C6-C2298BD2AA89}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C29DB48F-BD17-4760-97C6-C2298BD2AA89}.Debug|x64.Build.0 = Debug|Any CPU
+		{C29DB48F-BD17-4760-97C6-C2298BD2AA89}.Release|x64.ActiveCfg = Release|Any CPU
+		{C29DB48F-BD17-4760-97C6-C2298BD2AA89}.Release|x64.Build.0 = Release|Any CPU
+		{B77B5E33-0087-4D80-9B5B-8551AAB43F2F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B77B5E33-0087-4D80-9B5B-8551AAB43F2F}.Debug|x64.Build.0 = Debug|Any CPU
+		{B77B5E33-0087-4D80-9B5B-8551AAB43F2F}.Release|x64.ActiveCfg = Release|Any CPU
+		{B77B5E33-0087-4D80-9B5B-8551AAB43F2F}.Release|x64.Build.0 = Release|Any CPU
+		{06F3264C-5B4F-45A7-9F3C-A7BA19286B0D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{06F3264C-5B4F-45A7-9F3C-A7BA19286B0D}.Debug|x64.Build.0 = Debug|Any CPU
+		{06F3264C-5B4F-45A7-9F3C-A7BA19286B0D}.Release|x64.ActiveCfg = Release|Any CPU
+		{06F3264C-5B4F-45A7-9F3C-A7BA19286B0D}.Release|x64.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {628F48C2-DA8D-4EE3-83EF-98C61633B133}
+	EndGlobalSection
+EndGlobal

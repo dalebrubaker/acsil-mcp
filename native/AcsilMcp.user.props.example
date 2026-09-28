@@ -1,0 +1,18 @@
+<!-- Copy to AcsilMcp.user.props (git-ignored) and edit for this machine.
+
+     SierraChartInstance: each Sierra Chart installation to deploy AcsilMcp.dll into.
+       Identity = installation folder (the DLL goes to <folder>\Data).
+       UdpPort  = Global Settings >> Sierra Chart Server Settings >> UDP Port for that instance.
+     Remove all items to build without deploying.
+
+     AcsSourceDir: optional. Folder containing sierrachart.h. Defaults to native\ACS_Source. -->
+<Project>
+    <PropertyGroup>
+        <!-- <AcsSourceDir>C:\SierraChart\ACS_Source</AcsSourceDir> -->
+    </PropertyGroup>
+    <ItemGroup>
+        <SierraChartInstance Include="C:\SierraChart">
+            <UdpPort>22902</UdpPort>
+        </SierraChartInstance>
+    </ItemGroup>
+</Project>

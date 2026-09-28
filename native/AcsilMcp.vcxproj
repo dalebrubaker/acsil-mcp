@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <ItemGroup Label="ProjectConfigurations">
+        <ProjectConfiguration Include="Debug|x64">
+            <Configuration>Debug</Configuration>
+            <Platform>x64</Platform>
+        </ProjectConfiguration>
+        <ProjectConfiguration Include="Release|x64">
+            <Configuration>Release</Configuration>
+            <Platform>x64</Platform>
+        </ProjectConfiguration>
+    </ItemGroup>
+    <ItemGroup>
+        <ClCompile Include="adapter\DllName.cpp"/>
+        <ClCompile Include="adapter\AgentStudy.cpp"/>
+    </ItemGroup>
+    <ItemGroup>
+        <ClInclude Include="core\Version.h"/>
+    </ItemGroup>
+    <PropertyGroup Label="Globals">
+        <VCProjectVersion>15.0</VCProjectVersion>
+        <ProjectGuid>{0851A43F-45A7-464C-903A-4D88E466CFAD}</ProjectGuid>
+        <Keyword>Win32Proj</Keyword>
+        <RootNamespace>AcsilMcp</RootNamespace>
+        <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+        <VcpkgEnableManifest>true</VcpkgEnableManifest>
+        <VcpkgTriplet Condition="'$(Platform)'=='x64'">x64-windows-static</VcpkgTriplet>
+    </PropertyGroup>
+    <!-- Sierra Chart ACSIL headers (sierrachart.h and friends). Defaults to native\ACS_Source;
+         override per machine in AcsilMcp.user.props or with /p:AcsSourceDir=... -->
+    <Import Project="AcsilMcp.user.props" Condition="Exists('AcsilMcp.user.props')"/>
+    <PropertyGroup>
+        <AcsSourceDir Condition="'$(AcsSourceDir)' == ''">$(MSBuildThisFileDirectory)ACS_Source</AcsSourceDir>
+        <ScUdpCommandProject>$(MSBuildThisFileDirectory)..\tools\ScUdpCommand\ScUdpCommand.csproj</ScUdpCommandProject>
+        <ScUdpCommandExe>$(MSBuildThisFileDirectory)..\tools\ScUdpCommand\bin\$(Configuration)\net10.0\ScUdpCommand.exe</ScUdpCommandExe>
+    </PropertyGroup>
+    <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props"/>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+        <ConfigurationType>DynamicLibrary</ConfigurationType>
+        <UseDebugLibraries>true</UseDebugLibraries>
+        <PlatformToolset>v143</PlatformToolset>
+        <CharacterSet>MultiByte</CharacterSet>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+        <ConfigurationType>DynamicLibrary</ConfigurationType>
+        <UseDebugLibraries>false</UseDebugLibraries>
+        <PlatformToolset>v143</PlatformToolset>
+        <WholeProgramOptimization>true</WholeProgramOptimization>
+        <CharacterSet>MultiByte</CharacterSet>
+    </PropertyGroup>
+    <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props"/>
+    <ImportGroup Label="ExtensionSettings"/>
+    <ImportGroup Label="Shared"/>
+    <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+        <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform"/>
+    </ImportGroup>
+    <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+        <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform"/>
+    </ImportGroup>
+    <PropertyGroup Label="UserMacros"/>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+        <LinkIncremental>true</LinkIncremental>
+        <OutDir>$(ProjectDir)$(Platform)\$(Configuration)\</OutDir>
+        <IntDir>$(ProjectDir)$(Platform)\$(Configuration)\obj\</IntDir>
+        <TargetName>AcsilMcp</TargetName>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+        <LinkIncremental>false</LinkIncremental>
+        <OutDir>$(ProjectDir)$(Platform)\$(Configuration)\</OutDir>
+        <IntDir>$(ProjectDir)$(Platform)\$(Configuration)\obj\</IntDir>
+        <TargetName>AcsilMcp</TargetName>
+    </PropertyGroup>
+    <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+        <ClCompile>
+            <PrecompiledHeader>NotUsing</PrecompiledHeader>
+            <WarningLevel>Level3</WarningLevel>
+            <Optimization>Disabled</Optimization>
+            <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+            <AdditionalIncludeDirectories>$(AcsSourceDir);.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+            <LanguageStandard>stdcpp20</LanguageStandard>
+            <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+            <DisableSpecificWarnings>4267;26495;4996;4141</DisableSpecificWarnings>
+        </ClCompile>
+        <Link>
+            <SubSystem>Windows</SubSystem>
+            <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+        </Link>
+    </ItemDefinitionGroup>
+    <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+        <ClCompile>
+            <WarningLevel>Level3</WarningLevel>
+            <PrecompiledHeader>NotUsing</PrecompiledHeader>
+            <Optimization>MaxSpeed</Optimization>
+            <FunctionLevelLinking>true</FunctionLevelLinking>
+            <IntrinsicFunctions>true</IntrinsicFunctions>
+            <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+            <AdditionalIncludeDirectories>$(AcsSourceDir);.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+            <LanguageStandard>stdcpp20</LanguageStandard>
+            <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+            <DisableSpecificWarnings>4267;26495;4996;4141</DisableSpecificWarnings>
+        </ClCompile>
+        <Link>
+            <SubSystem>Windows</SubSystem>
+            <EnableCOMDATFolding>true</EnableCOMDATFolding>
+            <OptimizeReferences>true</OptimizeReferences>
+            <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+        </Link>
+    </ItemDefinitionGroup>
+    <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets"/>
+    <ImportGroup Label="ExtensionTargets"/>
+
+    <!-- Sierra Chart deployment. Runs only when AcsilMcp.user.props lists SierraChartInstance items
+         and SkipSierraChartDeploy is not true
+         (see AcsilMcp.user.props.example); CI and fresh clones skip it.
+         Pre-build: ask each running SC instance to release its study DLLs so the file is unlocked.
+         Post-build: copy the DLL and PDB into each instance's Data folder, then allow DLL loading again.
+         ScUdpCommand never fails the build when SC is not running. -->
+    <Target Name="ReleaseSierraChartDlls" BeforeTargets="PreBuildEvent" Condition="'@(SierraChartInstance)' != '' And '$(SkipSierraChartDeploy)' != 'true'">
+        <Exec Command="dotnet build &quot;$(ScUdpCommandProject)&quot; -c $(Configuration) -nologo -v q"/>
+        <Exec Command="&quot;$(ScUdpCommandExe)&quot; RELEASE_ALL_DLLS %(SierraChartInstance.UdpPort) 500"/>
+    </Target>
+    <Target Name="DeployToSierraChart" AfterTargets="PostBuildEvent" Condition="'@(SierraChartInstance)' != '' And '$(SkipSierraChartDeploy)' != 'true'">
+        <Copy SourceFiles="$(TargetDir)$(TargetName).dll;$(TargetDir)$(TargetName).pdb"
+              DestinationFolder="%(SierraChartInstance.Identity)\Data"
+              Retries="3" RetryDelayMilliseconds="500"/>
+        <Exec Command="&quot;$(ScUdpCommandExe)&quot; ALLOW_LOAD_ALL_DLLS %(SierraChartInstance.UdpPort) 0"/>
+    </Target>
+</Project>

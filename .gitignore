@@ -1,0 +1,25 @@
+# Build output
+x64/
+bin/
+obj/
+*.pdb
+*.ilk
+*.exp
+*.iobj
+*.ipdb
+
+# vcpkg manifest-mode packages
+native/vcpkg_installed/
+
+# Per-machine deploy settings (see native/AcsilMcp.user.props.example)
+native/AcsilMcp.user.props
+
+# IDE
+.vs/
+.idea/
+*.user
+*.suo
+*.DotSettings.user
+
+# Test results
+TestResults/

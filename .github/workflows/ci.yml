@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - uses: microsoft/setup-msbuild@v2
+
+      - name: Safety guard
+        shell: pwsh
+        run: ./scripts/check-no-trading.ps1
+
+      - name: Set up vcpkg
+        shell: pwsh
+        run: |
+          git -C "$env:VCPKG_INSTALLATION_ROOT" fetch origin --quiet
+          & "$env:VCPKG_INSTALLATION_ROOT\vcpkg.exe" integrate install
+
+      - uses: actions/cache@v4
+        with:
+          path: native/vcpkg_installed
+          key: vcpkg-${{ runner.os }}-${{ hashFiles('native/vcpkg.json') }}
+
+      - name: Native tests
+        shell: pwsh
+        run: |
+          msbuild native/AcsilMcpTests.vcxproj -m -nologo -v:m -p:Configuration=Release -p:Platform=x64
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          ./native/x64/Release/Tests/AcsilMcpTests.exe
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      # The DLL needs Sierra Chart's headers in native/ACS_Source (see native/ACS_Source/README.md).
+      - name: DLL
+        shell: pwsh
+        run: |
+          if (-not (Test-Path native/ACS_Source/sierrachart.h)) {
+            Write-Host "::notice::native/ACS_Source/sierrachart.h not present; skipping the DLL build."
+            exit 0
+          }
+          msbuild native/AcsilMcp.vcxproj -m -nologo -v:m -p:Configuration=Release -p:Platform=x64 -p:SkipSierraChartDeploy=true
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Server tests
+        shell: pwsh
+        run: dotnet test server/AcsilMcp.Server.Tests -c Release --nologo

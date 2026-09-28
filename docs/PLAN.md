@@ -50,11 +50,10 @@ Decisions:
 5. **Core/adapter split in C++.** `core/` (registry, framing, JSON, request validation) never
    includes `sierrachart.h` and is unit-tested in CI. `adapter/` holds the ACSIL study and is the
    only code that touches `sc`.
-6. **ACSIL headers live in `native/ACS_Source`.** The maintainer chose to commit Sierra Chart's
-   `.h` files there, as BruScCpp does, so CI can build the DLL; that commit is made by the
-   maintainer. `AcsSourceDir` (default `native\ACS_Source`) points the build at another folder,
+6. **ACSIL headers live in `native/ACS_Source`.** Sierra Chart's `.h` files are committed there
+   so CI can build the DLL. `AcsSourceDir` (default `native\ACS_Source`) points the build at another folder,
    such as an installation's `ACS_Source`. CI builds the DLL only when `sierrachart.h` is present.
-7. **Build and deploy like BruScCpp.** `AcsilMcp.sln` holds the DLL, its Catch2 tests,
+7. **Build and deploy on every build.** `AcsilMcp.sln` holds the DLL, its Catch2 tests,
    `ScUdpCommand`, and the .NET projects. Before a build, each Sierra Chart instance listed in the
    git-ignored `native\AcsilMcp.user.props` is sent `RELEASE_ALL_DLLS` over UDP. After it, the DLL
    and PDB are copied to `<instance>\Data` and `ALLOW_LOAD_ALL_DLLS` is sent.

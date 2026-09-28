@@ -24,7 +24,8 @@
         <RootNamespace>AcsilMcp</RootNamespace>
         <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
         <VcpkgEnableManifest>true</VcpkgEnableManifest>
-        <VcpkgTriplet Condition="'$(Platform)'=='x64'">x64-windows-static</VcpkgTriplet>
+        <VcpkgTriplet Condition="'$(Platform)'=='x64'">x64-windows-static-v143</VcpkgTriplet>
+        <VcpkgAdditionalInstallOptions>--overlay-triplets="$(MSBuildThisFileDirectory)triplets"</VcpkgAdditionalInstallOptions>
     </PropertyGroup>
     <!-- Sierra Chart ACSIL headers (sierrachart.h and friends). Defaults to native\ACS_Source;
          override per machine in AcsilMcp.user.props or with /p:AcsSourceDir=... -->
